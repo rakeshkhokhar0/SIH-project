@@ -5,6 +5,7 @@ import Dashboard from './Pages/Dashboard';
 import Schedule from './Pages/Schedule';
 import Reports from './Pages/Reports';
 import DataCapture from './Pages/DataCapture';
+import EvidenceTimeline from './Pages/EvidenceTimeline';
 
 function App() {
   return (
@@ -26,6 +27,10 @@ function App() {
         <Route
           path="/data-capture"
           element={<MainLayout><DataCapture /></MainLayout>}
+        />
+        <Route
+          path="/evidence-timeline"
+          element={<MainLayout><EvidenceTimeline /></MainLayout>}
         />
       </Routes>
     </BrowserRouter>
