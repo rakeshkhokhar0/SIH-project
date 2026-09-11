@@ -1,66 +1,90 @@
 import { activities } from '../services/mockData';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 function Dashboard() {
-  // Calculate summary stats
-  const totalActivities = activities.length;
-  const delayedCount = activities.filter(a => a.status === 'Delayed').length;
-  const completedCount = activities.filter(a => a.status === 'Completed').length;
+  const total = activities.length;
+  const delayed = activities.filter((a) => a.status === 'Delayed').length;
+  const completed = activities.filter((a) => a.status === 'Completed').length;
+  const avgProgress = Math.round(
+    (activities.reduce((sum, a) => sum + a.actualQty / a.plannedQty, 0) / total) * 100
+  );
 
-  // Prepare chart data: Planned vs Actual quantity per activity
-  const chartData = activities.map(a => ({
+  const chartData = activities.map((a) => ({
     name: a.wbsCode,
     Planned: a.plannedQty,
     Actual: a.actualQty,
   }));
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
+    <div className="px-5 md:px-10 py-7 md:py-9 max-w-5xl">
+      <div className="mb-8 md:mb-10">
+        <div className="text-[13px] text-[#14213D]/50 mb-1" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+          OVERVIEW
+        </div>
+        <h1 className="text-2xl md:text-3xl font-medium text-[#14213D]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          Dashboard
+        </h1>
+      </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white shadow rounded-lg p-5 border-l-4 border-blue-500">
-          <p className="text-gray-500 text-sm">Total Activities</p>
-          <p className="text-3xl font-bold text-gray-800">{totalActivities}</p>
+      {/* Hero stat + supporting stats */}
+      <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-10 mb-8 md:mb-10 pb-8 border-b border-[#14213D]/10">
+        <div>
+          <div className="text-5xl md:text-6xl font-medium text-[#3D5A80] leading-none" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            {avgProgress}%
+          </div>
+          <div className="text-sm text-[#14213D]/60 mt-2">Average completion across active work</div>
         </div>
-        <div className="bg-white shadow rounded-lg p-5 border-l-4 border-red-500">
-          <p className="text-gray-500 text-sm">Delayed</p>
-          <p className="text-3xl font-bold text-red-600">{delayedCount}</p>
-        </div>
-        <div className="bg-white shadow rounded-lg p-5 border-l-4 border-green-500">
-          <p className="text-gray-500 text-sm">Completed</p>
-          <p className="text-3xl font-bold text-green-600">{completedCount}</p>
+        <div className="flex gap-6 md:gap-8 md:pb-1">
+          <div>
+            <div className="text-xl md:text-2xl font-medium text-[#14213D]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{total}</div>
+            <div className="text-xs text-[#14213D]/50 mt-1">Total activities</div>
+          </div>
+          <div>
+            <div className="text-xl md:text-2xl font-medium text-[#E85D2F]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{delayed}</div>
+            <div className="text-xs text-[#14213D]/50 mt-1">Delayed</div>
+          </div>
+          <div>
+            <div className="text-xl md:text-2xl font-medium text-[#4C7A4C]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{completed}</div>
+            <div className="text-xs text-[#14213D]/50 mt-1">Completed</div>
+          </div>
         </div>
       </div>
 
-      {/* Chart: Planned vs Actual */}
-      <div className="bg-white shadow rounded-lg p-5 mb-8">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Planned vs Actual Quantity</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="Planned" fill="#93c5fd" />
-            <Bar dataKey="Actual" fill="#2563eb" />
-          </BarChart>
-        </ResponsiveContainer>
+      {/* Chart */}
+      <div className="mb-8 md:mb-10">
+        <h2 className="text-[11px] font-medium text-[#14213D]/70 mb-4 uppercase tracking-wide" style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.05em' }}>
+          Planned vs Actual Quantity
+        </h2>
+        <div className="overflow-x-auto">
+          <ResponsiveContainer width="100%" height={260} minWidth={500}>
+            <BarChart data={chartData} barGap={4}>
+              <CartesianGrid strokeDasharray="2 4" stroke="#14213D" strokeOpacity={0.08} vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#14213D99' }} axisLine={{ stroke: '#14213D22' }} tickLine={false} />
+              <YAxis tick={{ fontSize: 12, fill: '#14213D99' }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ borderRadius: 4, border: '1px solid #14213D22', fontSize: 13 }} />
+              <Bar dataKey="Planned" fill="#3D5A80" radius={[2, 2, 0, 0]} />
+              <Bar dataKey="Actual" fill="#E85D2F" radius={[2, 2, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
-      {/* Alerts */}
-      <div className="bg-white shadow rounded-lg p-5">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Risk Alerts</h2>
-        <ul className="space-y-2">
-          {activities
-            .filter(a => a.riskScore === 'High')
-            .map(a => (
-              <li key={a.id} className="flex justify-between items-center bg-red-50 px-4 py-2 rounded">
-                <span className="text-gray-700">{a.activityName} ({a.wbsCode})</span>
-                <span className="text-red-600 font-semibold text-sm">High Risk</span>
-              </li>
-            ))}
-        </ul>
+      {/* Risk Alerts */}
+      <div>
+        <h2 className="text-[11px] font-medium text-[#14213D]/70 mb-3 uppercase tracking-wide" style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.05em' }}>
+          Risk Alerts
+        </h2>
+        <div className="divide-y divide-[#14213D]/10 border-t border-b border-[#14213D]/10">
+          {activities.filter((a) => a.riskScore === 'High').map((a) => (
+            <div key={a.id} className="flex flex-col md:flex-row md:justify-between md:items-center py-3 gap-1 md:gap-0">
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-[#14213D]/40" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>{a.wbsCode}</span>
+                <span className="text-sm text-[#14213D]">{a.activityName}</span>
+              </div>
+              <span className="text-xs font-medium text-[#E85D2F]">High risk</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

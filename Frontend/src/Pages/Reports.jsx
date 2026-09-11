@@ -12,7 +12,12 @@ function Reports() {
     value: statusCounts[status],
   }));
 
-  const COLORS = { 'Completed': '#22c55e', 'Delayed': '#ef4444', 'In Progress': '#eab308' };
+  const COLORS = {
+    Completed: '#4C7A4C',
+    Delayed: '#E85D2F',
+    'In Progress': '#3D5A80',
+    'Not Started': '#14213D66',
+  };
 
   const varianceData = activities.map((a) => ({
     ...a,
@@ -20,82 +25,102 @@ function Reports() {
   }));
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Reports & Risk Analytics</h1>
+    <div className="px-5 md:px-10 py-7 md:py-9 max-w-5xl">
+      <div className="mb-8 md:mb-10">
+        <div className="text-[13px] text-[#14213D]/50 mb-1" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+          ANALYTICS
+        </div>
+        <h1 className="text-2xl md:text-3xl font-medium text-[#14213D]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          Reports
+        </h1>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white shadow rounded-lg p-5">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Activity Status Distribution</h2>
-          <ResponsiveContainer width="100%" height={250}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mb-8 md:mb-10 pb-8 md:pb-10 border-b border-[#14213D]/10">
+        <div>
+          <h2 className="text-[11px] uppercase text-[#14213D]/50 mb-4" style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.05em' }}>
+            Status Distribution
+          </h2>
+          <ResponsiveContainer width="100%" height={230}>
             <PieChart>
-              <Pie
-                data={pieData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label
-              >
+              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={75}>
                 {pieData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[entry.name] || '#8884d8'} />
                 ))}
               </Pie>
               <Tooltip />
-              <Legend />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white shadow rounded-lg p-5">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Risk Summary</h2>
-          <ul className="space-y-3">
+        <div>
+          <h2 className="text-[11px] uppercase text-[#14213D]/50 mb-4" style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.05em' }}>
+            Risk Summary
+          </h2>
+          <div className="divide-y divide-[#14213D]/10">
             {activities.map((a) => (
-              <li key={a.id} className="flex justify-between items-center border-b pb-2">
-                <span className="text-gray-700 text-sm">{a.activityName}</span>
+              <div key={a.id} className="flex justify-between items-center py-2.5 gap-3">
+                <span className="text-sm text-[#14213D]/80">{a.activityName}</span>
                 <span
-                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                    a.riskScore === 'High'
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-green-100 text-green-600'
-                  }`}
+                  className="text-xs font-medium px-2 py-0.5 rounded shrink-0"
+                  style={{
+                    color: a.riskScore === 'High' ? '#E85D2F' : a.riskScore === 'Medium' ? '#14213D' : '#4C7A4C',
+                    backgroundColor: a.riskScore === 'High' ? '#E85D2F1A' : a.riskScore === 'Medium' ? '#14213D0D' : '#4C7A4C1A',
+                  }}
                 >
-                  {a.riskScore} Risk
+                  {a.riskScore}
                 </span>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <h2 className="text-lg font-semibold text-gray-700 p-5 pb-0">Planned vs Actual Variance</h2>
-        <table className="w-full text-left mt-4">
-          <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
-            <tr>
-              <th className="px-4 py-3">WBS Code</th>
-              <th className="px-4 py-3">Planned Qty</th>
-              <th className="px-4 py-3">Actual Qty</th>
-              <th className="px-4 py-3">Variance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {varianceData.map((a) => (
-              <tr key={a.id} className="border-t">
-                <td className="px-4 py-3 font-medium text-gray-700">{a.wbsCode}</td>
-                <td className="px-4 py-3 text-gray-500">{a.plannedQty}</td>
-                <td className="px-4 py-3 text-gray-500">{a.actualQty}</td>
-                <td
-                  className={`px-4 py-3 font-semibold ${
-                    a.variance > 0 ? 'text-red-600' : 'text-green-600'
-                  }`}
-                >
-                  {a.variance > 0 ? `-${a.variance}` : 'On Track'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div>
+        <h2 className="text-[11px] uppercase text-[#14213D]/50 mb-4" style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.05em' }}>
+          Planned vs Actual Variance
+        </h2>
+
+        {/* Desktop table */}
+        <div className="hidden md:block border-t border-[#14213D]/10">
+          <div
+            className="grid grid-cols-[90px_1.6fr_120px_120px_120px] gap-6 py-3 text-[11px] uppercase text-[#14213D]/45 border-b border-[#14213D]/10"
+            style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.05em' }}
+          >
+            <div>WBS</div>
+            <div>Activity</div>
+            <div>Planned</div>
+            <div>Actual</div>
+            <div>Variance</div>
+          </div>
+          {varianceData.map((a) => (
+            <div key={a.id} className="grid grid-cols-[90px_1.6fr_120px_120px_120px] gap-6 py-3.5 items-center border-b border-[#14213D]/10">
+              <div className="text-[13px] text-[#14213D]/60" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>{a.wbsCode}</div>
+              <div className="text-sm text-[#14213D]">{a.activityName}</div>
+              <div className="text-sm text-[#14213D]/60">{a.plannedQty}</div>
+              <div className="text-sm text-[#14213D]/60">{a.actualQty}</div>
+              <div className="text-sm font-medium" style={{ color: a.variance > 0 ? '#E85D2F' : '#4C7A4C' }}>
+                {a.variance > 0 ? `-${a.variance}` : 'On track'}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile cards */}
+        <div className="md:hidden border-t border-[#14213D]/10">
+          {varianceData.map((a) => (
+            <div key={a.id} className="py-3.5 border-b border-[#14213D]/10 space-y-1.5">
+              <div className="flex justify-between items-center">
+                <span className="text-[13px] text-[#14213D]/60" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>{a.wbsCode}</span>
+                <span className="text-sm font-medium" style={{ color: a.variance > 0 ? '#E85D2F' : '#4C7A4C' }}>
+                  {a.variance > 0 ? `-${a.variance}` : 'On track'}
+                </span>
+              </div>
+              <div className="text-sm text-[#14213D]">{a.activityName}</div>
+              <div className="text-xs text-[#14213D]/50">Planned: {a.plannedQty} · Actual: {a.actualQty}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
