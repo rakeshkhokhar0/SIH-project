@@ -1,74 +1,143 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const [role, setRole] = useState("Site Engineer");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('Site Engineer');
+  const [error, setError] = useState('');
+
+  const roles = ['Site Engineer', 'Project Manager', 'Planner', 'Client'];
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // No real backend yet, so we just fake a successful login.
-    console.log("Logging in as:", role, email);
-    navigate("/dashboard"); // sends the user to the dashboard page after "login"
+    if (!email || !password) {
+      setError('Please enter email and password.');
+      return;
+    }
+    // No backend yet — mock login, store role locally
+    localStorage.setItem('userRole', role);
+    localStorage.setItem('userEmail', email);
+    navigate('/dashboard');
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-lg p-8 w-full max-w-sm"
-      >
-        <h1 className="text-2xl font-bold text-center text-blue-600 mb-6">
-          IntelliProgress Login
-        </h1>
+    <div
+      className="min-h-screen flex items-center justify-center px-5"
+      style={{
+        backgroundColor: '#EAE7E1',
+        backgroundImage: `linear-gradient(#14213D0A 1px, transparent 1px), linear-gradient(90deg, #14213D0A 1px, transparent 1px)`,
+        backgroundSize: '32px 32px',
+        fontFamily: "'IBM Plex Sans', sans-serif",
+      }}
+    >
+      <div className="w-full max-w-sm">
+        {/* Brand */}
+        <div className="mb-10 text-center">
+          <div
+            className="text-2xl font-medium text-[#14213D] tracking-tight"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Intelli-Progress
+          </div>
+          <div
+            className="text-[11px] text-[#14213D]/40 mt-1"
+            style={{ fontFamily: "'IBM Plex Mono', monospace" }}
+          >
+            SIH26122 · Oil India Limited
+          </div>
+        </div>
 
-        <label className="block mb-2 text-sm font-medium text-gray-700">
-          Role
-        </label>
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option>Site Engineer</option>
-          <option>Project Manager</option>
-          <option>Planner</option>
-          <option>Client</option>
-        </select>
+        {/* Card */}
+        <div className="bg-white border border-[#14213D]/10 rounded-lg p-8 shadow-sm">
+          <h1
+            className="text-lg font-medium text-[#14213D] mb-6"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Sign in
+          </h1>
 
-        <label className="block mb-2 text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          required
-          className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          {error && (
+            <div
+              className="mb-5 px-4 py-2.5 rounded text-sm"
+              style={{ backgroundColor: '#E85D2F1A', color: '#E85D2F' }}
+            >
+              {error}
+            </div>
+          )}
 
-        <label className="block mb-2 text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          required
-          className="w-full border border-gray-300 rounded-md p-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label
+                className="block text-[11px] uppercase text-[#14213D]/50 mb-2"
+                style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.06em' }}
+              >
+                Role
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {roles.map((r) => (
+                  <button
+                    type="button"
+                    key={r}
+                    onClick={() => setRole(r)}
+                    className={`text-xs font-medium px-3 py-2 rounded border transition-colors ${
+                      role === r
+                        ? 'bg-[#14213D] text-white border-[#14213D]'
+                        : 'bg-white text-[#14213D]/60 border-[#14213D]/15 hover:border-[#3D5A80]'
+                    }`}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition"
-        >
-          Log In
-        </button>
-      </form>
+            <div>
+              <label
+                className="block text-[11px] uppercase text-[#14213D]/50 mb-2"
+                style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.06em' }}
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@oilindia.in"
+                className="w-full px-4 py-2.5 rounded border border-[#14213D]/15 bg-white text-sm text-[#14213D] focus:outline-none focus:border-[#3D5A80] transition-colors"
+              />
+            </div>
+
+            <div>
+              <label
+                className="block text-[11px] uppercase text-[#14213D]/50 mb-2"
+                style={{ fontFamily: "'IBM Plex Mono', monospace", letterSpacing: '0.06em' }}
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 rounded border border-[#14213D]/15 bg-white text-sm text-[#14213D] focus:outline-none focus:border-[#3D5A80] transition-colors"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full px-6 py-2.5 rounded bg-[#14213D] text-white text-sm font-medium hover:bg-[#1a2847] transition-colors"
+            >
+              Sign in as {role}
+            </button>
+          </form>
+        </div>
+
+        <div className="text-center text-xs text-[#14213D]/40 mt-6">
+          Planning-to-Execution Bridge
+        </div>
+      </div>
     </div>
   );
 }
