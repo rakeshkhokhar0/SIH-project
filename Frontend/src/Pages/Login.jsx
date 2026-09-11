@@ -8,7 +8,8 @@ function Login() {
   const [role, setRole] = useState('Site Engineer');
   const [error, setError] = useState('');
 
-  const roles = ['Site Engineer', 'Project Manager', 'Planner', 'Client'];
+  // 'Client' role removed
+  const roles = ['Site Engineer', 'Project Manager', 'Planner'];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,7 +20,13 @@ function Login() {
     // No backend yet — mock login, store role locally
     localStorage.setItem('userRole', role);
     localStorage.setItem('userEmail', email);
-    navigate('/dashboard');
+
+    // Site Engineer naye dashboard par jayega, baki roles generic /dashboard par
+    if (role === 'Site Engineer') {
+      navigate('/engineer-dashboard');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -75,13 +82,13 @@ function Login() {
               >
                 Role
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-1.5">
                 {roles.map((r) => (
                   <button
                     type="button"
                     key={r}
                     onClick={() => setRole(r)}
-                    className={`text-xs font-medium px-3 py-2 rounded border transition-colors ${
+                    className={`text-xs font-medium px-2 py-2 rounded border transition-colors ${
                       role === r
                         ? 'bg-[#14213D] text-white border-[#14213D]'
                         : 'bg-white text-[#14213D]/60 border-[#14213D]/15 hover:border-[#3D5A80]'
