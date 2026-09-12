@@ -7,6 +7,8 @@ import Reports from './Pages/Reports';
 import DataCapture from './Pages/DataCapture';
 import EvidenceTimeline from './Pages/EvidenceTimeline';
 import SiteEngineerDashboard from './Pages/SiteEngineerDashboard';
+import ProjectManagerDashboard from './Pages/ProjectManagerDashboard';
+import PlannerDashboard from './Pages/PlannerDashboard';
 
 function App() {
   return (
@@ -15,17 +17,16 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Site Engineer Direct Integrated Flow */}
-        <Route
-          path="/engineer-dashboard"
-          element={
-            <MainLayout>
-              <SiteEngineerDashboard />
-            </MainLayout>
-          }
-        />
+        {/* Site Engineer - standalone page with own sidebar/header */}
+        <Route path="/engineer-dashboard" element={<SiteEngineerDashboard />} />
 
-        {/* Existing Routes */}
+        {/* Project Manager - standalone page with own sidebar/header */}
+        <Route path="/pm-dashboard" element={<ProjectManagerDashboard />} />
+
+        {/* Planner - standalone page with own sidebar/header */}
+        <Route path="/planner-dashboard" element={<PlannerDashboard />} />
+
+        {/* Existing generic routes (still using shared MainLayout) */}
         <Route
           path="/dashboard"
           element={<MainLayout><Dashboard /></MainLayout>}
@@ -38,10 +39,10 @@ function App() {
           path="/reports"
           element={<MainLayout><Reports /></MainLayout>}
         />
-        <Route
-          path="/data-capture"
-          element={<MainLayout><DataCapture /></MainLayout>}
-        />
+
+        {/* Data Capture - standalone page with own header (used by Site Engineer's Log Progress button) */}
+        <Route path="/data-capture" element={<DataCapture />} />
+
         <Route
           path="/evidence-timeline"
           element={<MainLayout><EvidenceTimeline /></MainLayout>}
