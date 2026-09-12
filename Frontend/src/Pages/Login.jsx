@@ -21,9 +21,13 @@ function Login() {
     localStorage.setItem('userRole', role);
     localStorage.setItem('userEmail', email);
 
-    // Site Engineer naye dashboard par jayega, baki roles generic /dashboard par
+    // Role ke hisaab se apna specific dashboard khulega
     if (role === 'Site Engineer') {
       navigate('/engineer-dashboard');
+    } else if (role === 'Project Manager') {
+      navigate('/pm-dashboard');
+    } else if (role === 'Planner') {
+      navigate('/planner-dashboard');
     } else {
       navigate('/dashboard');
     }
