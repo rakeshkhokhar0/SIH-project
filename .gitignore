@@ -1,0 +1,18 @@
+# Root virtual environments
+.venv/
+venv/
+env/
+
+# Graphify artifacts
+graphify-out/
+
+# OS metadata & temporary files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
